@@ -1,0 +1,7 @@
+# ninja log v6
+1	203	1750212098555955235	CMakeFiles/snake.dir/main.cpp.o.ddi	8e90bc26bdd8d634
+204	220	1750212098773789068	CMakeFiles/snake.dir/CXX.dd	267d45e13e174b91
+204	220	1750212098773789068	/Users/feenix/Desktop/snake/cmake-build-debug/CMakeFiles/snake.dir/CXXModules.json	267d45e13e174b91
+204	220	1750212098773789068	CMakeFiles/snake.dir/main.cpp.o.modmap	267d45e13e174b91
+220	998	1750212098775208992	CMakeFiles/snake.dir/main.cpp.o	773bca44cd7c8f2c
+1000	1084	1750212099555115037	snake	f476ce1f8e187c99
