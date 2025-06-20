@@ -15,16 +15,48 @@ struct position {
     }
 };
 
+//Dimensions of the board
+const int boardwidth = 30;
+const int boardlength = 30;
+
+char direction = 'D';
+deque <position> caterpillar;
+
+bool alive = true;
+
+void move();
+
 int main() {
     srand(time(0));
-    //Dimensions of the board
-    const int boardwidth = 30;
-    const int boardlength = 30;
+    caterpillar.push_front(position(3,3)); //IMPORTANT: Need to adjust so that it starts from the left top corner)
 
-    deque <position> caterpillar;
-    caterpillar.push_back(position(rand()%boardlength, rand()%boardwidth));
+    //Implement gameplay
+
+    cout << "code check 1";
+
+    while (alive) {
+        //move();
+        //checkwall();
+        //checkfood();
+        //checkinput();
+    }
 
 
 
     return 0;
+}
+
+void move() {
+    if (direction == 'D' || direction == 'd') {
+        //move right
+    }
+    else if (direction == 'A' || direction == 'a') {
+        //move left
+    }
+    else if (direction == 'S' || direction == 's') {
+        //move down
+    }
+    else if (direction == 'W' || direction == 'w') {
+        //move up
+    }
 }
