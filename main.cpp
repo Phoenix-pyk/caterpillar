@@ -16,13 +16,15 @@ struct position {
 };
 
 //Dimensions of the board
-const int boardwidth = 30;
-const int boardlength = 30;
+const int boardwidth = 30; //y coordinate
+const int boardlength = 30; //x coordinate
 
 char direction = 'D';
 deque <position> caterpillar;
 
 bool alive = true;
+
+
 
 void move();
 
@@ -41,8 +43,6 @@ int main() {
         //checkinput();
     }
 
-
-
     return 0;
 }
 
@@ -59,4 +59,13 @@ void move() {
     else if (direction == 'W' || direction == 'w') {
         //move up
     }
+}
+
+//this function make sure food is not generated directly over the caterpillar
+position generatefood() {
+    position food(rand()%boardlength,rand()%boardwidth);
+    for (position p : caterpillar) {
+        if (p.x == food.x && p.y == food.y) return generatefood();
+    }
+    return food;
 }
