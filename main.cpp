@@ -110,5 +110,3 @@ void hitwall() {
         }
     }
 }
-
-//Need to implement eat food function
