@@ -23,6 +23,7 @@ const int boardlength = 30; //x coordinate
 char direction = 'D';
 deque <dot> caterpillar;
 bool alive = true;
+dot leaf(0,0);
 
 //function declarations
 void move();
@@ -31,11 +32,11 @@ void hitwall();
 
 int main() {
     srand(time(0));
-    caterpillar.push_front(dot(3,3));
+    caterpillar.push_front(dot(15,15));
 
     //Implement gameplay
     cout << "code check 1";
-    dot leaf = generatefood();
+    leaf = generatefood();
 
     while (alive) {
         //move();
@@ -85,6 +86,13 @@ dot generatefood() {
     return food;
 }
 
+//function check food and keep the tail if food eaten and not otherwise to imitate movement
+void eatfood() {
+    dot head = caterpillar[0];
+    if (head.x==leaf.x && head.y==leaf.y) leaf = generatefood();
+    else caterpillar.pop_back();
+}
+
 //function check if the caterpillar head hits the wall and end game play if it does
 void hitwall() {
     dot head = caterpillar[0];
@@ -103,6 +111,4 @@ void hitwall() {
     }
 }
 
-void inputcheck() {
-
-}
+//Need to implement eat food function
