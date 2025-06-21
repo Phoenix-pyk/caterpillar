@@ -5,11 +5,11 @@
 #include <cmath>
 using namespace std;
 
-struct position {
+struct dot {
     int x;
     int y;
 
-    position(int xval, int yval) {
+    dot(int xval, int yval) {
         x = xval;
         y = yval;
     }
@@ -20,25 +20,27 @@ const int boardwidth = 30; //y coordinate
 const int boardlength = 30; //x coordinate
 
 char direction = 'D';
-deque <position> caterpillar;
+deque <dot> caterpillar;
 
 bool alive = true;
 
 
 
 void move();
+dot generatefood();
 
 int main() {
     srand(time(0));
-    caterpillar.push_front(position(3,3)); //IMPORTANT: Need to adjust so that it starts from the left top corner)
+    caterpillar.push_front(dot(3,3));
 
     //Implement gameplay
 
     cout << "code check 1";
-
+    dot leaf = generatefood();
     while (alive) {
         //move();
         //checkwall();
+        //if (!alive) break;
         //checkfood();
         //checkinput();
     }
@@ -62,10 +64,18 @@ void move() {
 }
 
 //this function make sure food is not generated directly over the caterpillar
-position generatefood() {
-    position food(rand()%boardlength,rand()%boardwidth);
-    for (position p : caterpillar) {
-        if (p.x == food.x && p.y == food.y) return generatefood();
+dot generatefood() {
+    dot food(rand()%boardlength,rand()%boardwidth);
+    for (dot d : caterpillar) {
+        if (d.x == food.x && d.y == food.y) return generatefood();
     }
     return food;
+}
+
+void checkwall() {
+    dot head = caterpillar[0];
+    if (head.x>=boardlength || head.x<0 || head.y>=boardwidth || head.y<0) {
+        cout <<"YOU DIED... GAME OVER...";
+        alive = false;
+    }
 }
