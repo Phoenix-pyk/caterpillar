@@ -38,6 +38,8 @@ int main() {
     cout << "code check 1";
     leaf = generatefood();
 
+    //NEED TO INPUT RAW MODE.
+
     while (alive) {
         //move();
         //hitwall();
@@ -45,6 +47,8 @@ int main() {
         //eatfood();
         //inputcheck();
     }
+
+    //BREAK RAW MODE RIGHT HERE.
 
     return 0;
 }
