@@ -29,6 +29,7 @@ dot leaf(0,0);
 void move();
 dot generatefood();
 void hitwall();
+void eatfood();
 
 int main() {
     srand(time(0));
