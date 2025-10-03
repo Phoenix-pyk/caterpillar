@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <termios.h>
+#include <unistd.h>
 using namespace std;
 
 struct dot {
@@ -25,6 +27,28 @@ deque <dot> caterpillar;
 bool alive = true;
 dot leaf(0,0);
 
+static termios Org_term{}; //Might not need it after frontend
+static bool Raw_on = false; //Might not need it after frontend
+
+void enableRawMode() {
+    if (Raw_on) return;
+    tcgetattr(STDIN_FILENO, &Org_term);
+    termios raw = Org_term;
+
+    raw.c_lflag &= ~(ECHO | ICANON); // no echo, no line buffering
+    raw.c_cc[VMIN]  = 0;             // read returns immediately
+    raw.c_cc[VTIME] = 0;             // no timeout
+
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+    Raw_on = true;
+} //Might not need it after frontend
+
+void disableRawMode() {
+    if (!Raw_on) return;
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &Org_term);
+    Raw_on = false;
+} //Might not need it after frontend
+
 //function declarations
 void move();
 dot generatefood();
@@ -42,11 +66,11 @@ int main() {
     //NEED TO INPUT RAW MODE.
 
     while (alive) {
+        //inputcheck();
         //move();
         //hitwall();
         //if (!alive) break;
         //eatfood();
-        //inputcheck();
     }
 
     //BREAK RAW MODE RIGHT HERE.
