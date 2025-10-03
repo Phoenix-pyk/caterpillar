@@ -5,6 +5,7 @@
 #include <cmath>
 #include <termios.h>
 #include <unistd.h>
+#include <cctype>
 using namespace std;
 
 struct dot {
@@ -54,6 +55,8 @@ void move();
 dot generatefood();
 void hitwall();
 void eatfood();
+void inputcheck();
+bool isOpposite(char x, char y);
 
 int main() {
     srand(time(0));
@@ -63,7 +66,8 @@ int main() {
     cout << "code check 1";
     leaf = generatefood();
 
-    //NEED TO INPUT RAW MODE.
+    //Enable RAW MODE here
+    enableRawMode();
 
     while (alive) {
         //inputcheck();
@@ -74,7 +78,7 @@ int main() {
     }
 
     //BREAK RAW MODE RIGHT HERE.
-
+    disableRawMode();
     return 0;
 }
 
@@ -83,22 +87,22 @@ void move() {
     int x = caterpillar[0].x;
     int y = caterpillar[0].y;
     dot d(0,0);
-    if (direction == 'D' || direction == 'd') {
+    if (direction == 'D') {
         //move right
         d.x = x+1;
         d.y = y;
     }
-    else if (direction == 'A' || direction == 'a') {
+    else if (direction == 'A') {
         //move left
         d.x = x-1;
         d.y = y;
     }
-    else if (direction == 'S' || direction == 's') {
+    else if (direction == 'S') {
         //move down
         d.x = x;
         d.y = y+1;
     }
-    else if (direction == 'W' || direction == 'w') {
+    else if (direction == 'W') {
         //move up
         d.x = x;
         d.y = y-1;
@@ -139,3 +143,20 @@ void hitwall() {
         }
     }
 }
+
+//function check if the input direction is valid or not
+void inputcheck() {
+    char input;
+    cin >> input;
+    char INPUT = toupper(input);
+    bool validinput = (INPUT == 'W' || INPUT == 'A' || INPUT == 'S' || INPUT == 'D');
+    if (validinput) {
+        if (caterpillar.size()>1 && isOpposite(direction,INPUT)) return;
+        else direction = INPUT ;
+    }
+}
+
+//helper function to prevent caterpillar from doing 180 degree turns
+bool isOpposite(char x, char y) {
+        return (x=='A'&&y=='D')||(x=='S'&&y=='W')||(x=='D'&&y=='A')||(x=='W'&&y=='S');
+    }
