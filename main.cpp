@@ -22,11 +22,13 @@ struct dot {
 const int boardwidth = 30; //y coordinate
 const int boardlength = 30; //x coordinate
 
+
 //Global variables
 char direction = 'D';
 deque <dot> caterpillar;
 bool alive = true;
 dot leaf(0,0);
+char grid[boardwidth][boardlength]; //board
 
 static termios Org_term{}; //Might not need it after frontend
 static bool Raw_on = false; //Might not need it after frontend
@@ -57,10 +59,12 @@ void hitwall();
 void eatfood();
 void inputcheck();
 bool isOpposite(char x, char y);
+void draw();
 
 int main() {
     srand(time(0));
     caterpillar.push_front(dot(15,15));
+
 
     //Implement gameplay
     cout << "code check 1";
@@ -160,3 +164,30 @@ void inputcheck() {
 bool isOpposite(char x, char y) {
         return (x=='A'&&y=='D')||(x=='S'&&y=='W')||(x=='D'&&y=='A')||(x=='W'&&y=='S');
     }
+
+//terminal screen display
+void draw() {
+    //1.Build a fresh picture on the board
+    for (int y=0; y<boardwidth; y++) {
+        for (int x=0; x<boardlength; x++) {
+            grid[y][x]= '.';
+        }
+    }
+    for (dot d: caterpillar) grid[d.y][d.x] = '0';
+
+    dot head = caterpillar[0];
+    grid[head.y][head.x] = '@';
+
+    grid[leaf.y][leaf.x] = '*';
+
+    //2.Clear the board
+    cout << "\033[2J\033[H";
+
+    //3.Print it
+    for (int y=0; y<boardwidth; y++) {
+        for (int x=0; x<boardlength; x++) {
+            cout << grid [y][x];
+        }
+        cout << '\n' ;
+    }
+}
