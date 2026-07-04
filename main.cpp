@@ -6,6 +6,9 @@
 #include <termios.h>
 #include <unistd.h>
 #include <cctype>
+#include <chrono>
+#include <thread>
+
 using namespace std;
 
 struct dot {
@@ -28,6 +31,7 @@ char direction = 'D';
 deque <dot> caterpillar;
 bool alive = true;
 dot leaf(0,0);
+int game_speed = 150;
 char grid[boardwidth][boardlength]; //board
 
 static termios Org_term{}; //Might not need it after frontend
@@ -65,20 +69,19 @@ int main() {
     srand(time(0));
     caterpillar.push_front(dot(15,15));
 
-
-    //Implement gameplay
-    cout << "code check 1";
     leaf = generatefood();
 
     //Enable RAW MODE here
     enableRawMode();
 
     while (alive) {
-        //inputcheck();
-        //move();
-        //hitwall();
-        //if (!alive) break;
-        //eatfood();
+        draw();
+        inputcheck();
+        move();
+        hitwall();
+        if (!alive) break;
+        eatfood();
+        this_thread::sleep_for(chrono::milliseconds(game_speed));
     }
 
     //BREAK RAW MODE RIGHT HERE.
@@ -126,7 +129,10 @@ dot generatefood() {
 //function check food and keep the tail if food eaten and not otherwise to imitate movement
 void eatfood() {
     dot head = caterpillar[0];
-    if (head.x==leaf.x && head.y==leaf.y) leaf = generatefood();
+    if (head.x==leaf.x && head.y==leaf.y) {
+        leaf = generatefood();
+        if (game_speed>40) game_speed -= 5;
+    }
     else caterpillar.pop_back();
 }
 
@@ -141,6 +147,7 @@ void hitwall() {
     for (int i = 1; i<caterpillar.size(); i++) {
         dot d = caterpillar[i];
         if (d.x==head.x && d.y==head.y) {
+            draw();
             cout <<"YOU DIED... GAME OVER...";
             alive = false;
             return;
@@ -151,8 +158,13 @@ void hitwall() {
 //function check if the input direction is valid or not
 void inputcheck() {
     char input;
-    cin >> input;
-    char INPUT = toupper(input);
+    char latest_input= 0;
+    while (read(STDIN_FILENO, &input, 1)==1) {
+        latest_input=input;
+    };
+    if (latest_input==0)return;
+
+    char INPUT = toupper(latest_input);
     bool validinput = (INPUT == 'W' || INPUT == 'A' || INPUT == 'S' || INPUT == 'D');
     if (validinput) {
         if (caterpillar.size()>1 && isOpposite(direction,INPUT)) return;
@@ -190,4 +202,5 @@ void draw() {
         }
         cout << '\n' ;
     }
+    cout << flush;
 }

@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/feenix/Desktop/snake/cmake-build-debug",
-		"source" : "/Users/feenix/Desktop/snake"
+		"build" : "/Users/feenix/Desktop/caterpillar/cmake-build-debug",
+		"source" : "/Users/feenix/Desktop/caterpillar"
 	},
 	"version" : 
 	{

@@ -31,10 +31,10 @@ set(CMAKE_CXX_COMPILER_RANLIB "/opt/homebrew/Cellar/llvm/19.1.4/bin/llvm-ranlib"
 set(CMAKE_LINKER "/usr/bin/ld")
 set(CMAKE_LINKER_LINK "")
 set(CMAKE_LINKER_LLD "")
-set(CMAKE_CXX_COMPILER_LINKER "/usr/bin/ld")
-set(CMAKE_CXX_COMPILER_LINKER_ID "AppleClang")
-set(CMAKE_CXX_COMPILER_LINKER_VERSION 1115.7.3)
-set(CMAKE_CXX_COMPILER_LINKER_FRONTEND_VARIANT GNU)
+set(CMAKE_CXX_COMPILER_LINKER "NOTFOUND")
+set(CMAKE_CXX_COMPILER_LINKER_ID "")
+set(CMAKE_CXX_COMPILER_LINKER_VERSION )
+set(CMAKE_CXX_COMPILER_LINKER_FRONTEND_VARIANT )
 set(CMAKE_MT "")
 set(CMAKE_TAPI "/Library/Developer/CommandLineTools/usr/bin/tapi")
 set(CMAKE_COMPILER_IS_GNUCXX )
@@ -87,19 +87,19 @@ endif()
 
 
 
-set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "/opt/homebrew/Cellar/llvm/19.1.4/include/c++/v1;/opt/homebrew/Cellar/llvm/19.1.4/lib/clang/19/include;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include")
-set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES "c++")
-set(CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES "/opt/homebrew/opt/llvm/lib;/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/lib;/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/usr/lib/swift")
-set(CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/System/Library/Frameworks")
+set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "/usr/include;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include")
+set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES "")
+set(CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES "/opt/homebrew/opt/llvm/lib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/swift")
+set(CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks")
 set(CMAKE_CXX_COMPILER_CLANG_RESOURCE_DIR "/opt/homebrew/Cellar/llvm/19.1.4/lib/clang/19")
 
 set(CMAKE_CXX_COMPILER_IMPORT_STD "")
 ### Imported target for C++23 standard library
-set(CMAKE_CXX23_COMPILER_IMPORT_STD_NOT_FOUND_MESSAGE "Experimental `import std` support not enabled when detecting toolchain; it must be set before `CXX` is enabled (usually a `project()` call)")
+set(CMAKE_CXX23_COMPILER_IMPORT_STD_NOT_FOUND_MESSAGE "Unsupported generator: Unix Makefiles")
 
 
 ### Imported target for C++26 standard library
-set(CMAKE_CXX26_COMPILER_IMPORT_STD_NOT_FOUND_MESSAGE "Experimental `import std` support not enabled when detecting toolchain; it must be set before `CXX` is enabled (usually a `project()` call)")
+set(CMAKE_CXX26_COMPILER_IMPORT_STD_NOT_FOUND_MESSAGE "Unsupported generator: Unix Makefiles")
 
 
 
