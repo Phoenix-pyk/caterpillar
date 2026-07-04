@@ -23,7 +23,7 @@ struct dot {
 
 //Dimensions of the board
 const int boardwidth = 30; //y coordinate
-const int boardlength = 30; //x coordinate
+const int boardlength = 60; //x coordinate
 
 
 //Global variables
@@ -31,7 +31,7 @@ char direction = 'D';
 deque <dot> caterpillar;
 bool alive = true;
 dot leaf(0,0);
-int game_speed = 150;
+int game_speed = 200;
 char grid[boardwidth][boardlength]; //board
 
 static termios Org_term{}; //Might not need it after frontend
@@ -131,7 +131,7 @@ void eatfood() {
     dot head = caterpillar[0];
     if (head.x==leaf.x && head.y==leaf.y) {
         leaf = generatefood();
-        if (game_speed>40) game_speed -= 5;
+        if (game_speed>60) game_speed -= 5;
     }
     else caterpillar.pop_back();
 }
@@ -160,15 +160,29 @@ void inputcheck() {
     char input;
     char latest_input= 0;
     while (read(STDIN_FILENO, &input, 1)==1) {
-        latest_input=input;
-    };
-    if (latest_input==0)return;
+        if (input==27) { // Start of an escape sequence
+            char seq[2];
+            if (read(STDIN_FILENO, &seq[0], 1) !=1) continue;
+            if (read(STDIN_FILENO, &seq[1], 1) !=1) continue;
+            if (seq[0]=='[') {
+                switch (seq[1]) {
+                    case 'A': latest_input = 'W'; break; // up
+                    case 'B': latest_input = 'S'; break; // down
+                    case 'C': latest_input = 'D'; break; // right
+                    case 'D': latest_input = 'A'; break; // left
+                }
+            }
+        }   else{
+            latest_input=input;
+        };
+        if (latest_input==0)return;
 
-    char INPUT = toupper(latest_input);
-    bool validinput = (INPUT == 'W' || INPUT == 'A' || INPUT == 'S' || INPUT == 'D');
-    if (validinput) {
-        if (caterpillar.size()>1 && isOpposite(direction,INPUT)) return;
-        else direction = INPUT ;
+        char INPUT = toupper(latest_input);
+        bool validinput = (INPUT == 'W' || INPUT == 'A' || INPUT == 'S' || INPUT == 'D');
+        if (validinput) {
+            if (caterpillar.size()>1 && isOpposite(direction,INPUT)) return;
+            else direction = INPUT ;
+        }
     }
 }
 
