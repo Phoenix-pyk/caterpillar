@@ -1,0 +1,15 @@
+# CMake build directories
+cmake-build-*/
+build/
+
+# CLion / JetBrains IDE files
+.idea/
+
+# Compiled binaries
+sdltest
+snake
+*.o
+*.out
+
+# macOS
+.DS_Store
