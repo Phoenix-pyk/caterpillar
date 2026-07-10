@@ -5,11 +5,12 @@
 #include <stdio.h>
 
 //Screen dimensions
-const int SCREEN_WIDTH =    900;
-const int SCREEN_LENGTH =   900;
+const int SCREEN_WIDTH =    500;
+const int SCREEN_LENGTH =   500;
 
 //Direction constants
 enum Direction{
+    NONE,
     UP,
     DOWN,
     LEFT,
@@ -89,9 +90,9 @@ int main( int argc, char* args[]) {
 
                 int rectx = 45;
                 int recty = 45;
-                const int rectwidth = 3;
-                const int rectlength = 6;
-                Direction current_direction = UP;
+                const int rectwidth = 30;
+                const int rectlength = 30;
+                Direction current_direction = NONE;
                 int movespeed = 5;
 
                 if (!loadMedia()) {
