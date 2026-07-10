@@ -113,6 +113,7 @@ int main( int argc, char* args[]) {
                             //if it is a keypress, change direction
                             else if (e.type == SDL_KEYDOWN) {
                                 switch (e.key.keysym.sym) {
+                                    case SDLK_p:        current_direction = NONE; break;
                                     case SDLK_UP:       current_direction = UP; break;
                                     case SDLK_DOWN:     current_direction = DOWN; break;
                                     case SDLK_LEFT:     current_direction = LEFT; break;
@@ -122,6 +123,7 @@ int main( int argc, char* args[]) {
                         } //event keypress handling done
                         // outer game play loop
                         switch (current_direction) {
+                            case NONE:  break;
                             case UP:    recty -= movespeed; break;
                             case DOWN:  recty += movespeed; break;
                             case LEFT:  rectx -= movespeed; break;
