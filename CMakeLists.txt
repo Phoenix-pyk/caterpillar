@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.30)
 project(snake)
 set(CMAKE_CXX_STANDARD 20)
+
+set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/sdl2-compat")
 find_package(SDL2 REQUIRED)
 
 add_executable(snake main.cpp)

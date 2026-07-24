@@ -87,6 +87,8 @@ int main( int argc, char* args[]) {
                 //Game States
                 bool quit = false;
                 SDL_Event e;
+                Uint32 lastMoveTime = 0;
+                Uint32 moveInterval = 150; //ms between moves
 
                 int rectx = 45;
                 int recty = 45;
@@ -122,12 +124,16 @@ int main( int argc, char* args[]) {
                             }
                         } //event keypress handling done
                         // outer game play loop
-                        switch (current_direction) {
-                            case NONE:  break;
-                            case UP:    recty -= movespeed; break;
-                            case DOWN:  recty += movespeed; break;
-                            case LEFT:  rectx -= movespeed; break;
-                            case RIGHT: rectx += movespeed; break;
+                        Uint32 currentTime = SDL_GetTicks();
+                        if (currentTime - lastMoveTime >= moveInterval) {
+                            switch (current_direction) {
+                                case NONE:  break;
+                                case UP:    recty -= movespeed; break;
+                                case DOWN:  recty += movespeed; break;
+                                case LEFT:  rectx -= movespeed; break;
+                                case RIGHT: rectx += movespeed; break;
+                            }
+                            lastMoveTime = currentTime;
                         }
                         //Render to the screen
 
