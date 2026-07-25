@@ -40,6 +40,7 @@ bool init();
 bool loadMedia();
 void close();
 segment generatefood();
+bool eatfood();
 
 
 
@@ -121,8 +122,8 @@ int main( int argc, char* args[]) {
                         bool hits_bottom_wall = newY + grid_size > SCREEN_LENGTH;
 
                         if (!hits_left_wall && !hits_right_wall && !hits_top_wall && !hits_bottom_wall) {
-                            caterpillar.front().x = newX;
-                            caterpillar.front().y = newY;
+                            caterpillar.push_front(segment(newX, newY));
+                            if (!eatfood()) caterpillar.pop_back(); // grow if eaten food + imitate movement
                         } else {
                             //game over
                             game_over = true;
@@ -143,12 +144,16 @@ int main( int argc, char* args[]) {
                         SDL_RenderFillRect(gRenderer,&rect);
                     }else{
                         //Alive branch of the game loop
-                        //2. Build the rectangle
-                        SDL_Rect    rect = {caterpillar.front().x, caterpillar.front().y, grid_size, grid_size};
 
-                        //3. Set draw color and draw it
-                        SDL_SetRenderDrawColor(gRenderer, 115,115,115,255);
-                        SDL_RenderFillRect(gRenderer,&rect);
+                        //==== Draw caterpillar segments ===
+                        for (const auto& segment : caterpillar) {
+                            //2. Build the rectangle
+                            SDL_Rect    rect = {segment.x, segment.y, grid_size, grid_size};
+
+                            //3. Set draw color and draw it
+                            SDL_SetRenderDrawColor(gRenderer, 115,115,115,255);
+                            SDL_RenderFillRect(gRenderer,&rect);
+                        }
 
                         //4. Draw food
                         SDL_Rect    foodblock = {food.x, food.y, grid_size, grid_size};
@@ -230,4 +235,13 @@ segment generatefood() {
         if (d.x == food.x && d.y == food.y) return generatefood();
     }
     return food;
+}
+
+bool eatfood() {
+    segment head = caterpillar.front();
+    if (head.x==food.x && head.y==food.y) {
+        food = generatefood(); // respawn food elsewhere
+        return true; // snake should grow
+    }
+    return false;
 }
