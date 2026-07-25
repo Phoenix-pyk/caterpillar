@@ -1,8 +1,10 @@
 //
 // Created by Phoo Yamon Kyaw on 7/10/26.
 
+#include <deque>
 #include <SDL.h>
 #include <stdio.h>
+using namespace std;
 
 //Screen dimensions
 const int SCREEN_WIDTH =    600;
@@ -26,6 +28,16 @@ void close();
 SDL_Window* gWindow =   NULL;
 SDL_Renderer* gRenderer = NULL;
 
+struct segment{
+    int x;
+    int y;
+
+    segment(int xval, int yval) {
+        x = xval;
+        y = yval;
+    }
+};
+
 
 int main( int argc, char* args[]) {
     if (!init()) {
@@ -40,13 +52,14 @@ int main( int argc, char* args[]) {
         Uint32 lastMoveTime = 0;
         Uint32 moveInterval = 150; //ms between moves
 
-        int rectx = 45;
-        int recty = 45;
+        //int rectx = 45;
+        //int recty = 45;
         //const int rectwidth = 30;
         //const int rectlength = 30;
 
         const int grid_size = 30;
-
+        deque <segment> caterpillar;
+        caterpillar.push_front(segment(45,45));
         
         Direction current_direction = NONE;
         //int movespeed = 5;
@@ -85,26 +98,26 @@ int main( int argc, char* args[]) {
                 if (!game_over) {
                     if (currentTime - lastMoveTime >= moveInterval) {
 
-                        int newRectX = rectx;
-                        int newRectY = recty;
+                        int newX = caterpillar.front().x;
+                        int newY = caterpillar.front().y;
 
                         switch (current_direction) {
                             case NONE:  break;
-                            case UP:    newRectY -= grid_size; break;
-                            case DOWN:  newRectY += grid_size; break;
-                            case LEFT:  newRectX -= grid_size; break;
-                            case RIGHT: newRectX += grid_size; break;
+                            case UP:    newY -= grid_size; break;
+                            case DOWN:  newY += grid_size; break;
+                            case LEFT:  newX -= grid_size; break;
+                            case RIGHT: newX += grid_size; break;
                         }
 
                         //check if the rectangle has reached the edge of the screen
-                        bool hits_left_wall = newRectX < 0;
-                        bool hits_right_wall = newRectX + grid_size > SCREEN_WIDTH;
-                        bool hits_top_wall = newRectY < 0;
-                        bool hits_bottom_wall = newRectY + grid_size > SCREEN_LENGTH;
+                        bool hits_left_wall = newX < 0;
+                        bool hits_right_wall = newX + grid_size > SCREEN_WIDTH;
+                        bool hits_top_wall = newY < 0;
+                        bool hits_bottom_wall = newY + grid_size > SCREEN_LENGTH;
 
                         if (!hits_left_wall && !hits_right_wall && !hits_top_wall && !hits_bottom_wall) {
-                            rectx = newRectX;
-                            recty = newRectY;
+                            caterpillar.front().x = newX;
+                            caterpillar.front().y = newY;
                         } else {
                             //game over
                             game_over = true;
@@ -118,14 +131,14 @@ int main( int argc, char* args[]) {
 
                     if (game_over) {
                         //2. Build the rectangle
-                        SDL_Rect    rect = {rectx, recty, grid_size, grid_size};
+                        SDL_Rect    rect = {caterpillar.front().x, caterpillar.front().y, grid_size, grid_size};
 
                         //3. Set draw color and draw it
                         SDL_SetRenderDrawColor(gRenderer, 225,0,0,255);
                         SDL_RenderFillRect(gRenderer,&rect);
                     }else{
                         //2. Build the rectangle
-                        SDL_Rect    rect = {rectx, recty, grid_size, grid_size};
+                        SDL_Rect    rect = {caterpillar.front().x, caterpillar.front().y, grid_size, grid_size};
 
                         //3. Set draw color and draw it
                         SDL_SetRenderDrawColor(gRenderer, 115,115,115,255);
