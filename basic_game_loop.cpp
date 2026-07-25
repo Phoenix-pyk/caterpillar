@@ -5,8 +5,8 @@
 #include <stdio.h>
 
 //Screen dimensions
-const int SCREEN_WIDTH =    500;
-const int SCREEN_LENGTH =   500;
+const int SCREEN_WIDTH =    600;
+const int SCREEN_LENGTH =   600;
 
 //Direction constants
 enum Direction{
@@ -25,6 +25,123 @@ void close();
 //Variables
 SDL_Window* gWindow =   NULL;
 SDL_Renderer* gRenderer = NULL;
+
+
+int main( int argc, char* args[]) {
+    if (!init()) {
+        printf("Failed to initialize \n");
+    }
+    else {
+        //Game States
+        bool quit = false;
+        bool game_over = false;
+
+        SDL_Event e;
+        Uint32 lastMoveTime = 0;
+        Uint32 moveInterval = 150; //ms between moves
+
+        int rectx = 45;
+        int recty = 45;
+        //const int rectwidth = 30;
+        //const int rectlength = 30;
+
+        const int grid_size = 30;
+
+        
+        Direction current_direction = NONE;
+        //int movespeed = 5;
+
+        if (!loadMedia()) {
+            printf("Failed to load media \n");
+        }
+        else {
+            //Game Loop Starts
+
+            // game play loop
+            while (!quit) {
+                //handle events first
+                while (SDL_PollEvent(&e)!=0) {
+                    //check if event is quit
+                    //inner game keypress loop
+                    if (e.type == SDL_QUIT) {
+                        quit = true;
+                    }
+                    //if it is a keypress, change direction
+                    else if (e.type == SDL_KEYDOWN) {
+                        switch (e.key.keysym.sym) {
+                            case SDLK_p:        current_direction = NONE; break;
+                            case SDLK_UP:       current_direction = UP; break;
+                            case SDLK_DOWN:     current_direction = DOWN; break;
+                            case SDLK_LEFT:     current_direction = LEFT; break;
+                            case SDLK_RIGHT:    current_direction = RIGHT; break;
+                        }
+                    }
+                } //event keypress handling done
+                // outer game play loop
+
+                //Grid time
+                Uint32 currentTime = SDL_GetTicks();
+
+                if (!game_over) {
+                    if (currentTime - lastMoveTime >= moveInterval) {
+
+                        int newRectX = rectx;
+                        int newRectY = recty;
+
+                        switch (current_direction) {
+                            case NONE:  break;
+                            case UP:    newRectY -= grid_size; break;
+                            case DOWN:  newRectY += grid_size; break;
+                            case LEFT:  newRectX -= grid_size; break;
+                            case RIGHT: newRectX += grid_size; break;
+                        }
+
+                        //check if the rectangle has reached the edge of the screen
+                        bool hits_left_wall = newRectX < 0;
+                        bool hits_right_wall = newRectX + grid_size > SCREEN_WIDTH;
+                        bool hits_top_wall = newRectY < 0;
+                        bool hits_bottom_wall = newRectY + grid_size > SCREEN_LENGTH;
+
+                        if (!hits_left_wall && !hits_right_wall && !hits_top_wall && !hits_bottom_wall) {
+                            rectx = newRectX;
+                            recty = newRectY;
+                        } else {
+                            //game over
+                            game_over = true;
+                        }
+                        lastMoveTime = currentTime;
+                    }
+                    //Render to the screen
+                    //1. Clear first
+                    SDL_SetRenderDrawColor(gRenderer,0,0,0,255);
+                    SDL_RenderClear(gRenderer);
+
+                    if (game_over) {
+                        //2. Build the rectangle
+                        SDL_Rect    rect = {rectx, recty, grid_size, grid_size};
+
+                        //3. Set draw color and draw it
+                        SDL_SetRenderDrawColor(gRenderer, 225,0,0,255);
+                        SDL_RenderFillRect(gRenderer,&rect);
+                    }else{
+                        //2. Build the rectangle
+                        SDL_Rect    rect = {rectx, recty, grid_size, grid_size};
+
+                        //3. Set draw color and draw it
+                        SDL_SetRenderDrawColor(gRenderer, 115,115,115,255);
+                        SDL_RenderFillRect(gRenderer,&rect);
+                    }
+                    //4. Present the Screen
+                    SDL_RenderPresent(gRenderer);
+                }
+            }
+        }
+
+
+        close();
+        return 0;
+    }
+}
 
 bool init() {
     //Initialize flag
@@ -58,131 +175,23 @@ bool init() {
             }*/
         }
     }
-            return success;
-        }
+    return success;
+}
 
 
-        bool loadMedia() {
-            bool success = true;
+bool loadMedia() {
+    bool success = true;
 
-            return success;
-        }
+    return success;
+}
 
-        void close() {
-            //Destroy Renderer and Window
-            SDL_DestroyRenderer(gRenderer);
-            SDL_DestroyWindow(gWindow);
-            gWindow = NULL;
-            gRenderer = NULL;
+void close() {
+    //Destroy Renderer and Window
+    SDL_DestroyRenderer(gRenderer);
+    SDL_DestroyWindow(gWindow);
+    gWindow = NULL;
+    gRenderer = NULL;
 
-            //Shut Down SDL
-            SDL_Quit();
-        }
-
-int main( int argc, char* args[]) {
-    if (!init()) {
-        printf("Failed to initialize \n");
-    }
-    else {
-        //Game States
-        bool quit = false;
-        bool game_over = false;
-
-        SDL_Event e;
-        Uint32 lastMoveTime = 0;
-        Uint32 moveInterval = 150; //ms between moves
-
-        int rectx = 45;
-        int recty = 45;
-        const int rectwidth = 30;
-        const int rectlength = 30;
-        Direction current_direction = NONE;
-        int movespeed = 5;
-
-        if (!loadMedia()) {
-            printf("Failed to load media \n");
-        }
-        else {
-            //Game Loop Starts
-
-            // game play loop
-            while (!quit) {
-                //handle events first
-                while (SDL_PollEvent(&e)!=0) {
-                    //check if event is quit
-                    //inner game keypress loop
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
-                    }
-                    //if it is a keypress, change direction
-                    else if (e.type == SDL_KEYDOWN) {
-                        switch (e.key.keysym.sym) {
-                            case SDLK_p:        current_direction = NONE; break;
-                            case SDLK_UP:       current_direction = UP; break;
-                            case SDLK_DOWN:     current_direction = DOWN; break;
-                            case SDLK_LEFT:     current_direction = LEFT; break;
-                            case SDLK_RIGHT:    current_direction = RIGHT; break;
-                        }
-                    }
-                } //event keypress handling done
-                // outer game play loop
-                Uint32 currentTime = SDL_GetTicks();
-
-                if (!game_over) {
-                    if (currentTime - lastMoveTime >= moveInterval) {
-
-                        int newRectX = rectx;
-                        int newRectY = recty;
-
-                        switch (current_direction) {
-                            case NONE:  break;
-                            case UP:    newRectY -= movespeed; break;
-                            case DOWN:  newRectY += movespeed; break;
-                            case LEFT:  newRectX -= movespeed; break;
-                            case RIGHT: newRectX += movespeed; break;
-                        }
-
-                        //check if the rectangle has reached the edge of the screen
-                        bool hits_left_wall = newRectX < 0;
-                        bool hits_right_wall = newRectX + rectwidth > SCREEN_WIDTH;
-                        bool hits_top_wall = newRectY < 0;
-                        bool hits_bottom_wall = newRectY + rectlength > SCREEN_LENGTH;
-
-                        if (!hits_left_wall && !hits_right_wall && !hits_top_wall && !hits_bottom_wall) {
-                            rectx = newRectX;
-                            recty = newRectY;
-                        } else {
-                            //game over
-                            game_over = true;
-                        }
-                        lastMoveTime = currentTime;
-                    }
-                    //Render to the screen
-                    //1. Clear first
-                    SDL_SetRenderDrawColor(gRenderer,0,0,0,255);
-                    SDL_RenderClear(gRenderer);
-
-                    if (game_over) {
-                        //2. Build the rectangle
-                        SDL_Rect    rect = {rectx, recty, rectwidth, rectlength};
-
-                        //3. Set draw color and draw it
-                        SDL_SetRenderDrawColor(gRenderer, 225,0,0,255);
-                        SDL_RenderFillRect(gRenderer,&rect);
-                    }else{
-                        //2. Build the rectangle
-                        SDL_Rect    rect = {rectx, recty, rectwidth, rectlength};
-
-                        //3. Set draw color and draw it
-                        SDL_SetRenderDrawColor(gRenderer, 115,115,115,255);
-                        SDL_RenderFillRect(gRenderer,&rect);
-                    }
-                    //4. Present the Screen
-                    SDL_RenderPresent(gRenderer);
-                }
-            }
-        }
-        close();
-        return 0;
-    }
+    //Shut Down SDL
+    SDL_Quit();
 }
