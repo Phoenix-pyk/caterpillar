@@ -19,15 +19,7 @@ enum Direction{
     RIGHT
 };
 
-//Starts up SDL and creates window
-bool init();
-bool loadMedia();
-void close();
-
-//Variables
-SDL_Window* gWindow =   NULL;
-SDL_Renderer* gRenderer = NULL;
-
+//Global Variables
 struct segment{
     int x;
     int y;
@@ -37,6 +29,18 @@ struct segment{
         y = yval;
     }
 };
+SDL_Window* gWindow =   NULL;
+SDL_Renderer* gRenderer = NULL;
+const int grid_size = 30;
+deque<segment> caterpillar;
+segment food(0,0);
+
+//Starts up SDL and creates window
+bool init();
+bool loadMedia();
+void close();
+segment generatefood();
+
 
 
 int main( int argc, char* args[]) {
@@ -57,9 +61,9 @@ int main( int argc, char* args[]) {
         //const int rectwidth = 30;
         //const int rectlength = 30;
 
-        const int grid_size = 30;
-        deque <segment> caterpillar;
-        caterpillar.push_front(segment(45,45));
+
+
+        caterpillar.push_front(segment(30,30));
         
         Direction current_direction = NONE;
         //int movespeed = 5;
@@ -69,9 +73,10 @@ int main( int argc, char* args[]) {
         }
         else {
             //Game Loop Starts
-
+            food = generatefood();
             // game play loop
             while (!quit) {
+
                 //handle events first
                 while (SDL_PollEvent(&e)!=0) {
                     //check if event is quit
@@ -137,12 +142,18 @@ int main( int argc, char* args[]) {
                         SDL_SetRenderDrawColor(gRenderer, 225,0,0,255);
                         SDL_RenderFillRect(gRenderer,&rect);
                     }else{
+                        //Alive branch of the game loop
                         //2. Build the rectangle
                         SDL_Rect    rect = {caterpillar.front().x, caterpillar.front().y, grid_size, grid_size};
 
                         //3. Set draw color and draw it
                         SDL_SetRenderDrawColor(gRenderer, 115,115,115,255);
                         SDL_RenderFillRect(gRenderer,&rect);
+
+                        //4. Draw food
+                        SDL_Rect    foodblock = {food.x, food.y, grid_size, grid_size};
+                        SDL_SetRenderDrawColor(gRenderer, 0,255,0,255);
+                        SDL_RenderFillRect(gRenderer,&foodblock);
                     }
                     //4. Present the Screen
                     SDL_RenderPresent(gRenderer);
@@ -207,4 +218,16 @@ void close() {
 
     //Shut Down SDL
     SDL_Quit();
+}
+
+segment generatefood() {
+    int cellsX = SCREEN_WIDTH / grid_size;
+    int cellsY = SCREEN_LENGTH / grid_size;
+
+    segment food((rand()%cellsX)*grid_size, (rand()%cellsY)*grid_size);
+
+    for (segment d : caterpillar) {
+        if (d.x == food.x && d.y == food.y) return generatefood();
+    }
+    return food;
 }
