@@ -8,8 +8,8 @@
 using namespace std;
 
 //Screen dimensions
-const int SCREEN_WIDTH =    600;
-const int SCREEN_LENGTH =   600;
+const int SCREEN_WIDTH =    900;
+const int SCREEN_LENGTH =   900;
 
 //Direction constants
 enum Direction{
@@ -58,8 +58,12 @@ int main( int argc, char* args[]) {
         bool game_over = false;
 
         SDL_Event e;
+        const int startInterval = 300;
+        const int minInterval = 66;
+        const int speedStep = 9;
+
         Uint32 lastMoveTime = 0;
-        Uint32 moveInterval = 150; //ms between moves
+        Uint32 moveInterval = startInterval; //ms between moves
 
         //int rectx = 45;
         //int recty = 45;
@@ -129,6 +133,7 @@ int main( int argc, char* args[]) {
                             caterpillar.push_front(segment(newX, newY));
                             if (growing) {
                                 food = generatefood();
+                                if (moveInterval>minInterval) moveInterval -= speedStep;
                             }else {
                                 caterpillar.pop_back();
                             }
