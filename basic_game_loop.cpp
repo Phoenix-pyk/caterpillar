@@ -4,6 +4,7 @@
 #include <deque>
 #include <SDL.h>
 #include <stdio.h>
+#include <__xlocale.h>
 using namespace std;
 
 //Screen dimensions
@@ -41,6 +42,9 @@ bool loadMedia();
 void close();
 segment generatefood();
 bool eatfood();
+bool isOpposite(Direction x, Direction y);
+bool check_collision( int x, int y, bool growing);
+bool willEat(int x, int y);
 
 
 
@@ -67,6 +71,7 @@ int main( int argc, char* args[]) {
         caterpillar.push_front(segment(30,30));
         
         Direction current_direction = NONE;
+        Direction next_direction = NONE;
         //int movespeed = 5;
 
         if (!loadMedia()) {
@@ -87,13 +92,16 @@ int main( int argc, char* args[]) {
                     }
                     //if it is a keypress, change direction
                     else if (e.type == SDL_KEYDOWN) {
+                        Direction requested = current_direction;
                         switch (e.key.keysym.sym) {
-                            case SDLK_p:        current_direction = NONE; break;
-                            case SDLK_UP:       current_direction = UP; break;
-                            case SDLK_DOWN:     current_direction = DOWN; break;
-                            case SDLK_LEFT:     current_direction = LEFT; break;
-                            case SDLK_RIGHT:    current_direction = RIGHT; break;
+                            case SDLK_p:        requested = NONE; break;
+                            case SDLK_UP:       requested = UP; break;
+                            case SDLK_DOWN:     requested = DOWN; break;
+                            case SDLK_LEFT:     requested = LEFT; break;
+                            case SDLK_RIGHT:    requested = RIGHT; break;
+                            default:            requested = current_direction; break;
                         }
+                        if (!(isOpposite(requested, current_direction))) next_direction = requested;
                     }
                 } //event keypress handling done
                 // outer game play loop
@@ -103,7 +111,7 @@ int main( int argc, char* args[]) {
 
                 if (!game_over) {
                     if (currentTime - lastMoveTime >= moveInterval) {
-
+                        current_direction = next_direction;
                         int newX = caterpillar.front().x;
                         int newY = caterpillar.front().y;
 
@@ -115,15 +123,15 @@ int main( int argc, char* args[]) {
                             case RIGHT: newX += grid_size; break;
                         }
 
-                        //check if the rectangle has reached the edge of the screen
-                        bool hits_left_wall = newX < 0;
-                        bool hits_right_wall = newX + grid_size > SCREEN_WIDTH;
-                        bool hits_top_wall = newY < 0;
-                        bool hits_bottom_wall = newY + grid_size > SCREEN_LENGTH;
-
-                        if (!hits_left_wall && !hits_right_wall && !hits_top_wall && !hits_bottom_wall) {
+                        //check collision
+                        bool growing = willEat(newX, newY);
+                        if (!check_collision(newX, newY, growing)) {
                             caterpillar.push_front(segment(newX, newY));
-                            if (!eatfood()) caterpillar.pop_back(); // grow if eaten food + imitate movement
+                            if (growing) {
+                                food = generatefood();
+                            }else {
+                                caterpillar.pop_back();
+                            }
                         } else {
                             //game over
                             game_over = true;
@@ -237,11 +245,35 @@ segment generatefood() {
     return food;
 }
 
-bool eatfood() {
+/*bool eatfood() {
     segment head = caterpillar.front();
     if (head.x==food.x && head.y==food.y) {
         food = generatefood(); // respawn food elsewhere
         return true; // snake should grow
+    }
+    return false;
+}*/
+
+bool isOpposite(Direction x, Direction y) {
+    return (x==LEFT && y==RIGHT) || (x==RIGHT && y==LEFT) || (x==UP && y==DOWN) || (x==DOWN && y==UP);
+}
+
+bool willEat(int x, int y) {
+    return (x==food.x && y==food.y);
+}
+
+bool check_collision( int x, int y, bool growing) {
+    // wall collision
+    bool hits_left_wall = x < 0;
+    bool hits_right_wall = x + grid_size > SCREEN_WIDTH;
+    bool hits_top_wall = y < 0;
+    bool hits_bottom_wall = y + grid_size > SCREEN_LENGTH;
+    if (hits_left_wall || hits_right_wall || hits_top_wall || hits_bottom_wall) return true;
+
+    //self collision
+    for (size_t i = 0; i < caterpillar.size(); i++) {
+       if (!growing && i == caterpillar.size()-1) continue; // don't check the tail if growing
+        if (caterpillar[i].x == x && caterpillar[i].y == y) return true;
     }
     return false;
 }

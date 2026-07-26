@@ -34,8 +34,8 @@ Run the visual game loop (in progress):
 - [x] Frame timing (consistent movement speed)
 - [x] Boundary/wall collision
 - [x] Game-over state
-- [ ] Grid-based snake body (multiple segments)
-- [ ] Food spawning and eating
+- [x] Grid-based snake body (multiple segments)
+- [x] Food spawning and eating
 - [ ] Full visual Snake game
 - [ ] Game-over screen + replay option
 
