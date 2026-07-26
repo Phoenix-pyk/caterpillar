@@ -65,18 +65,11 @@ int main( int argc, char* args[]) {
         Uint32 lastMoveTime = 0;
         Uint32 moveInterval = startInterval; //ms between moves
 
-        //int rectx = 45;
-        //int recty = 45;
-        //const int rectwidth = 30;
-        //const int rectlength = 30;
-
-
-
         caterpillar.push_front(segment(30,30));
-        
+
         Direction current_direction = NONE;
         Direction next_direction = NONE;
-        //int movespeed = 5;
+
 
         if (!loadMedia()) {
             printf("Failed to load media \n");
@@ -96,7 +89,7 @@ int main( int argc, char* args[]) {
                     }
                     //if it is a keypress, change direction
                     else if (e.type == SDL_KEYDOWN) {
-                        Direction requested = current_direction;
+                        Direction requested;
                         switch (e.key.keysym.sym) {
                             case SDLK_p:        requested = NONE; break;
                             case SDLK_UP:       requested = UP; break;
@@ -208,13 +201,6 @@ bool init() {
                 printf("Renderer error: %s \n", SDL_GetError());
                 success = false;
             }
-            /*else {
-                SDL_SetRenderDrawColor(gRenderer,225,225,225,225);
-                SDL_RenderClear(gRenderer);
-
-                SDL_Rect    rect = {rectx, recty, rectwidth, rectlength};
-                SDL_RenderFillRect(gRenderer, &rect);
-            }*/
         }
     }
     return success;
